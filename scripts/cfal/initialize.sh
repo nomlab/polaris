@@ -18,7 +18,13 @@ fswatch_path=`which fswatch`
 
 sed -e "s&your_CFAL_path&${YOUR_CFAL_DIR}&g" $SH_PATH/templates/collect_file_access_log.sh.tpl | sed -e "s&your_home_dir&${YOUR_HOME_DIR}&g" | sed -e "s&your_ignore_list&${YOUR_IGNORE_LIST}&g"  | sed -e "s&FSWATCH_PATH&${fswatch_path}&g" > $SH_PATH/collect_file_access_log.sh
 
-if [ "$(uname -s)" == 'Linux' ]; then
+if [ "$(which cmd.exe)" == '/mnt/c/Windows/system32/cmd.exe' ]; then
+    # for WSL1
+    sed -e "s&your_CFAL_path&${YOUR_CFAL_DIR}&g" $SH_PATH/templates/wsl_collect_file_access_log.sh.tpl | sed -e "s&your_home_dir&${YOUR_HOME_DIR}&g" | sed -e "s&your_ignore_list&${YOUR_IGNORE_LIST}&g"  | sed -e "s&FSWATCH_PATH&${fswatch_path}&g" > $SH_PATH/wsl_collect_file_access_log.sh
+    sed -e "s&your_CFAL_path&${YOUR_CFAL_DIR}&g" $SH_PATH/templates/wsl_auto_start_collect_file_access_log.sh.tpl | sed -e "s&your_home_dir&${YOUR_HOME_DIR}&g" | sed -e "s&your_ignore_list&${YOUR_IGNORE_LIST}&g"  | sed -e "s&FSWATCH_PATH&${fswatch_path}&g" > $SH_PATH/wsl_auto_start_collect_file_access_log.sh
+fi
+    
+if [ "$(uname)" == 'Linux' ]; then    
     # for Linux
     sed -e "s&your_CFAL_path&${YOUR_CFAL_DIR}&g" $SH_PATH/templates/collect_file_access_log.service.tpl > $SH_PATH/collect_file_access_log.service
     cp $SH_PATH/collect_file_access_log.service ~/.config/systemd/user/

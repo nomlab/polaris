@@ -63,10 +63,22 @@ def cfal(cfal_cmd):
                 f.write(config_template)
 
         subprocess.call(app_home + "/scripts/cfal/initialize.sh")
-        subprocess.call(["systemctl", "--user", "daemon-reload"])
+        try:
+            cmd_path = str(subprocess.check_output(["which", "cmd.exe"], universal_newlines=True)).replace("\n", "")
+        except:
+            cmd_path = ""
+        if cmd_path != "/mnt/c/Windows/system32/cmd.exe":
+            subprocess.call(["systemctl", "--user", "daemon-reload"])
         logger.info("Initialize CFAL.")
     elif cfal_cmd == "start":
-        subprocess.call(app_home + "/scripts/cfal/start.sh")
+        try:
+            cmd_path = str(subprocess.check_output(["which", "cmd.exe"], universal_newlines=True)).replace("\n", "")
+        except:
+            cmd_path = ""
+        if cmd_path == "/mnt/c/Windows/system32/cmd.exe":
+            subprocess.call(["/bin/bash", app_home + "/scripts/cfal/wsl_collect_file_access_log.sh"])
+        else:
+            subprocess.call(app_home + "/scripts/cfal/start.sh")
         logger.info("Start CFAL daemon.")
     elif cfal_cmd == "stop":
         subprocess.call(app_home + "/scripts/cfal/stop.sh")
